@@ -1,0 +1,16 @@
+C:\Users\Admin\Desktop\moneymanagerfullstack\backend\src\main\java\com\example\moneymanager\security\JwtAuthenticationFilter.java
+C:\Users\Admin\Desktop\moneymanagerfullstack\backend\src\main\java\com\example\moneymanager\controller\AuthController.java
+C:\Users\Admin\Desktop\moneymanagerfullstack\backend\src\main\java\com\example\moneymanager\repository\UserRepository.java
+C:\Users\Admin\Desktop\moneymanagerfullstack\backend\src\main\java\com\example\moneymanager\service\TransactionService.java
+C:\Users\Admin\Desktop\moneymanagerfullstack\backend\src\main\java\com\example\moneymanager\security\CustomUserDetailsService.java
+C:\Users\Admin\Desktop\moneymanagerfullstack\backend\src\main\java\com\example\moneymanager\model\Transaction.java
+C:\Users\Admin\Desktop\moneymanagerfullstack\backend\src\main\java\com\example\moneymanager\controller\TransactionController.java
+C:\Users\Admin\Desktop\moneymanagerfullstack\backend\src\main\java\com\example\moneymanager\controller\DashboardController.java
+C:\Users\Admin\Desktop\moneymanagerfullstack\backend\src\main\java\com\example\moneymanager\service\UserService.java
+C:\Users\Admin\Desktop\moneymanagerfullstack\backend\src\main\java\com\example\moneymanager\model\TransactionType.java
+C:\Users\Admin\Desktop\moneymanagerfullstack\backend\src\main\java\com\example\moneymanager\MoneyManagerApplication.java
+C:\Users\Admin\Desktop\moneymanagerfullstack\backend\src\main\java\com\example\moneymanager\security\JwtUtil.java
+C:\Users\Admin\Desktop\moneymanagerfullstack\backend\src\main\java\com\example\moneymanager\security\SecurityConfig.java
+C:\Users\Admin\Desktop\moneymanagerfullstack\backend\src\main\java\com\example\moneymanager\repository\TransactionRepository.java
+C:\Users\Admin\Desktop\moneymanagerfullstack\backend\src\main\java\com\example\moneymanager\dto\AuthRequest.java
+C:\Users\Admin\Desktop\moneymanagerfullstack\backend\src\main\java\com\example\moneymanager\model\User.java
