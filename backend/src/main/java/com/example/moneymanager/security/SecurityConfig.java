@@ -11,6 +11,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 public class SecurityConfig {
@@ -24,11 +27,26 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/register", "/auth/login").permitAll()
-                .anyRequest().authenticated()
+                    .requestMatchers("/auth/register", "/auth/login").permitAll()
+                    .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                // REMOVED: .cors(cors -> cors.disable()) - This line was causing the issue
         return http.build();
+    }
+
+    @Bean
+    public CorsFilter corsFilter() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.addAllowedOrigin("http://localhost:5173"); // Your Vite/React port
+        config.addAllowedOrigin("http://localhost:3000"); // Create React App port
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
+        config.setAllowCredentials(true);
+        
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
     }
 
     @Bean

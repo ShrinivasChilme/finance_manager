@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,9 +15,9 @@ import com.example.moneymanager.dto.AuthRequest;
 import com.example.moneymanager.model.User;
 import com.example.moneymanager.security.JwtUtil;
 import com.example.moneymanager.service.UserService;
-
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173"})
 public class AuthController {
 
     @Autowired
@@ -31,10 +32,10 @@ public class AuthController {
         if (userService.findByUsername(request.getUsername()).isPresent()) {
             return ResponseEntity.badRequest().body("Username already exists");
         }
-        if (userService.findByEmail(request.getUsername()).isPresent()) {
+        if (userService.findByEmail(request.getEmail()).isPresent()) {
             return ResponseEntity.badRequest().body("Email already exists");
         }
-        User user = new User(null, request.getUsername(), request.getPassword(), request.getUsername());
+        User user = new User(null, request.getUsername(), request.getPassword(), request.getEmail());
         userService.registerUser(user);
         return ResponseEntity.ok("User registered successfully");
     }
