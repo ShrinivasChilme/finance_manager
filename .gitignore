@@ -1,0 +1,115 @@
+# # Java
+# *.class
+# *.jar
+# *.war
+# *.ear
+# /target/
+# /.classpath
+# /.project
+# /.settings/
+
+# # Maven
+# /logs/
+# /.mvn/
+# !/.mvn/wrapper/maven-wrapper.jar
+
+# # Node
+# /node_modules/
+# /dist/
+# /.env
+
+# # VS Code
+# .vscode/
+
+# # OS
+# .DS_Store
+# Thumbs.db
+
+# # IDE
+# .idea/
+# *.iml
+
+# # Misc
+# *.log
+# *.tmp
+# *.bak
+
+# # Frontend build
+# frontend/dist/
+
+# # Backend build
+# backend/target/
+
+# # Database
+# *.db
+# *.sqlite
+
+# # Environment
+# .env.local
+# .env.development.local
+# .env.test.local
+# .env.production.local
+
+
+
+
+
+
+# =========================
+# 🧭 Global ignores
+# =========================
+.DS_Store
+Thumbs.db
+*.log
+*.env
+*.iml
+*.class
+*.jar
+*.war
+*.ear
+
+# =========================
+# 🧰 IDE / Editor
+# =========================
+.vscode/
+.idea/
+*.swp
+
+# =========================
+# 🖥️ Backend (Spring Boot)
+# =========================
+backend/target/
+backend/.gradle/
+backend/build/
+backend/out/
+
+# Spring specific
+*.pid
+
+# =========================
+# 🌐 Frontend (React)
+# =========================
+frontend/node_modules/
+frontend/.vite/
+frontend/dist/
+frontend/build/
+frontend/.next/
+frontend/.nuxt/
+frontend/.cache/
+
+# Temporary files from Vite
+frontend/node_modules/.vite/
+
+# Environment files
+frontend/.env
+frontend/.env.local
+frontend/.env.*.local
+
+# =========================
+# 🚫 Other generated stuff
+# =========================
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json.tmp
