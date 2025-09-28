@@ -30,4 +30,8 @@ public class TransactionService {
     public void deleteTransaction(Long id) {
         transactionRepository.deleteById(id);
     }
+    // Add this method to your TransactionService
+public List<Transaction> findByUsername(String username) {
+    return transactionRepository.findByUserUsername(username);
+}
 }
