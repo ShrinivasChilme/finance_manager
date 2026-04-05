@@ -17,6 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -64,6 +65,12 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", config);
 
         return source;
+    }
+
+    // Ensure CORS headers are applied early in the filter chain (helps with preflight responses)
+    @Bean
+    public CorsFilter corsFilter() {
+        return new CorsFilter((UrlBasedCorsConfigurationSource) corsConfigurationSource());
     }
 
     @Bean

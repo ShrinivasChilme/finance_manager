@@ -33,52 +33,53 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getServletPath();
-        // Skip JWT filter for authentication endpoints, public endpoints, and OPTIONS requests
-        return path.startsWith("/auth/") || 
-               path.equals("/error") ||
-               "OPTIONS".equalsIgnoreCase(request.getMethod());
+        // Skip JWT filter for authentication endpoints and error path; allow OPTIONS through
+        return path.startsWith("/auth/") || path.equals("/error");
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        
+
+        // Let preflight OPTIONS pass through immediately
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         try {
             String jwt = getJwtFromRequest(request);
-            
-            if (jwt != null) {
-                // Validate token first before extracting username
-                if (jwtUtil.validateToken(jwt)) {
-                    String username = jwtUtil.getUsernameFromToken(jwt);
-                    
-                    if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                        
-                        if (userDetails != null) {
-                            UsernamePasswordAuthenticationToken authToken = 
-                                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                            SecurityContextHolder.getContext().setAuthentication(authToken);
-                            
-                            logger.debug("Authenticated user: {}", username);
-                        }
+
+            if (StringUtils.hasText(jwt) && jwtUtil.validateToken(jwt)) {
+                String username = jwtUtil.getUsernameFromToken(jwt);
+
+                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+                    if (userDetails != null) {
+                        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                                userDetails, null, userDetails.getAuthorities());
+                        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        SecurityContextHolder.getContext().setAuthentication(authToken);
+                        logger.debug("Authenticated user: {}", username);
                     }
-                } else {
+                }
+            } else {
+                if (StringUtils.hasText(jwt)) {
                     logger.warn("Invalid JWT token received");
                 }
             }
-            
-        } catch (Exception e) {
-            logger.error("Cannot set user authentication: {}", e.getMessage());
-            // Continue with the filter chain even if authentication fails
+
+        } catch (Exception ex) {
+            logger.error("Cannot set user authentication: {}", ex.getMessage());
         }
-        
+
         filterChain.doFilter(request, response);
     }
 
     private String getJwtFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
-        
+
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             String token = bearerToken.substring(7);
             if (StringUtils.hasText(token)) {
@@ -86,7 +87,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 return token;
             }
         }
-        
+
         return null;
     }
 }
