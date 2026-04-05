@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:5012';
+const API_BASE_URL = 'https://finance-manager-os56.onrender.com';
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
