@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import api, { transactionAPI } from "../api/api";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -14,7 +15,7 @@ const Dashboard = () => {
   const [alerts, setAlerts] = useState([]);
   const [showAlerts, setShowAlerts] = useState(true);
   const [currency, setCurrency] = useState("INR"); // Default to INR
-  const API_BASE_URL = 'http://localhost:5012';
+  // use the shared axios instance (`api`) configured with the correct base URL
 
   // Currency conversion rates
   const currencyRates = {
@@ -46,16 +47,10 @@ const Dashboard = () => {
         return;
       }
 
-      console.log('Fetching transactions from:', `${API_BASE_URL}/transactions`);
-      
-      const response = await fetch(`${API_BASE_URL}/transactions`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
+      console.log('Fetching transactions via API client');
 
-      if (response.ok) {
-        const data = await response.json();
+      const response = await api.get('/transactions');
+      const data = response.data;
         console.log('API Response data:', data);
         
         let transactionsData = [];
@@ -70,10 +65,6 @@ const Dashboard = () => {
         
         console.log('Processed transactions:', transactionsData);
         setTransactions(transactionsData);
-      } else {
-        console.error('Failed to fetch transactions. Status:', response.status);
-        setTransactions([]);
-      }
     } catch (error) {
       console.error('Error fetching transactions:', error);
       setTransactions([]);
@@ -152,18 +143,15 @@ const Dashboard = () => {
     setShowDownloadMenu(false);
     try {
       const token = localStorage.getItem('token');
-      const endpoint = useINR 
-        ? `${API_BASE_URL}/transactions/export/csv/inr`
-        : `${API_BASE_URL}/transactions/export/csv`;
-      
-      const response = await fetch(endpoint, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
+      let response;
+      if (useINR) {
+        response = await api.get('/transactions/export/csv/inr', { responseType: 'blob' });
+      } else {
+        response = await transactionAPI.downloadCSV();
+      }
 
-      if (response.ok) {
-        const blob = await response.blob();
+      if (response.status === 200) {
+        const blob = response.data;
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
@@ -197,18 +185,15 @@ const Dashboard = () => {
     setShowDownloadMenu(false);
     try {
       const token = localStorage.getItem('token');
-      const endpoint = useINR 
-        ? `${API_BASE_URL}/transactions/export/json/inr`
-        : `${API_BASE_URL}/transactions/export/json`;
-      
-      const response = await fetch(endpoint, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
+      let response;
+      if (useINR) {
+        response = await api.get('/transactions/export/json/inr', { responseType: 'blob' });
+      } else {
+        response = await transactionAPI.downloadJSON();
+      }
 
-      if (response.ok) {
-        const blob = await response.blob();
+      if (response.status === 200) {
+        const blob = response.data;
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
@@ -243,14 +228,10 @@ const Dashboard = () => {
     setShowDownloadMenu(false);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${API_BASE_URL}/transactions/export/csv/inr`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
+      const response = await api.get('/transactions/export/csv/inr', { responseType: 'blob' });
 
-      if (response.ok) {
-        const blob = await response.blob();
+      if (response.status === 200) {
+        const blob = response.data;
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
@@ -284,14 +265,10 @@ const Dashboard = () => {
     setShowDownloadMenu(false);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${API_BASE_URL}/transactions/export/json/inr`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
+      const response = await api.get('/transactions/export/json/inr', { responseType: 'blob' });
 
-      if (response.ok) {
-        const blob = await response.blob();
+      if (response.status === 200) {
+        const blob = response.data;
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
@@ -450,14 +427,10 @@ const Dashboard = () => {
     setShowDownloadMenu(false);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${API_BASE_URL}/transactions/export/pdf/monthly`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
+      const response = await api.get('/transactions/export/pdf/monthly', { responseType: 'blob' });
 
-      if (response.ok) {
-        const blob = await response.blob();
+      if (response.status === 200) {
+        const blob = response.data;
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
@@ -643,18 +616,12 @@ const Dashboard = () => {
     const token = localStorage.getItem('token');
     
     try {
-      const response = await fetch(`${API_BASE_URL}/transactions/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
+      const response = await api.delete(`/transactions/${id}`);
+      if (response.status === 200 || response.status === 204) {
         console.log('Transaction deleted, refreshing data...');
         refreshData();
       } else {
-        console.error('Failed to delete transaction');
+        console.error('Failed to delete transaction', response.status);
       }
     } catch (error) {
       console.error('Error deleting transaction:', error);
